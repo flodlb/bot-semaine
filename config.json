@@ -1,0 +1,34 @@
+{
+  "account": {
+    "email": "florianbdlb2@gmail.com",
+    "password": "fdlb2154@P"
+  },
+  "locations": [
+    "Max Roussié",
+    "Tennis Renée Garilhe - ex Courcelles"
+  ],
+  "date": "",
+  "hours": [
+    "20","19","21"
+  ],
+  "priceType": [
+    "Tarif réduit"
+  ],
+  "courtType": [
+    "Couvert"
+  ],
+  "players": [
+    {
+      "lastName": "de la BOISSIERE",
+      "firstName": "Florian"
+    },
+    {
+      "lastName": "de la BOISSIERE",
+      "firstName": "Alban"
+    }
+  ],
+  "ntfy": {
+    "enable": false,
+    "topic": "YOUR-OWN-TOPIC"
+  }
+}
