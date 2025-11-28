@@ -1,0 +1,28 @@
+{
+  "name": "botTennis",
+  "version": "1.0.0",
+  "description": "Script to book tennis court automatically",
+  "main": "index.js",
+  "author": "Bertrand d'Aure",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "postinstall": "npx playwright install chromium",
+    "start": "node index.js",
+    "eslint": "eslint ."
+  },
+  "dependencies": {
+    "@gradio/client": "^1.19.1",
+    "dayjs": "^1.11.18",
+    "ics": "^3.8.1",
+    "playwright": "^1.56.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/plugin-syntax-import-assertions": "^7.25.6",
+    "@eslint/js": "^9.9.1",
+    "@stylistic/eslint-plugin-js": "^2.8.0",
+    "eslint": "^9.9.1",
+    "globals": "^15.9.0"
+  }
+}

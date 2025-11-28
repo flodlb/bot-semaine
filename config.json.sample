@@ -1,0 +1,34 @@
+{
+  "account": {
+    "email": "florianbdlb2@gmail.com",
+    "password": "fdlb2154@P"
+  },
+  "locations": [
+    "MaxRoussié",
+    "ex courcelle",
+  ],
+  "date": "8/12/2025",
+  "hours": [
+    "20",
+  ],
+  "priceType": [
+    "Tarif réduit"
+  ],
+  "courtType": [
+    "Découvert",
+  ],
+  "players": [
+    {
+      "lastName": "de la BOISSIERE",
+      "firstName": "Florian"
+    },
+    {
+      "lastName": "de la BOISSIERE",
+      "firstName": "Alban"
+    }
+  ],
+  "ntfy": {
+    "enable": false,
+    "topic": "YOUR-OWN-TOPIC"
+  }
+}
