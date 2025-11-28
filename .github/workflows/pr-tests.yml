@@ -6,13 +6,6 @@ on:
     branches: [master]                 # Déclenche le workflow sur les PR visant master
     types: [opened, synchronize, reopened, ready_for_review]
     # Événements qui relancent les tests
-
-  schedule:
-    # Tous les mardis à 7h50 heure française (6h50 UTC)
-    - cron: '50 6 * * 2'               # 06:50 UTC = 07:50 heure de Paris
-
-  workflow_dispatch:                   # Permet de lancer manuellement le workflow si besoin
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }} 
   # Empêche l’exécution simultanée de plusieurs runs pour une même PR
