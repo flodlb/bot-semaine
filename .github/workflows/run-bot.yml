@@ -24,5 +24,9 @@ jobs:
         run: |
           npm ci || npm install
           npx playwright install --with-deps chromium
+      - name: Create config.json
+        run: |
+          echo '${{ secrets.CONFIG_JSON }}' > config.json
+
       - name: Run tennis script
         run: node index.js
