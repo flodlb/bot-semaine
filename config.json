@@ -4,12 +4,12 @@
     "password": "fdlb2154@P"
   },
   "locations": [
-    "Max Roussié",
-    "Tennis Renée Garilhe - ex Courcelles"
+    "Max Rousié",
+    "Renée Garilhe - ex Courcelles"
   ],
   "date": "",
   "hours": [
-    "20","19","21"
+    "11","20","19","21"
   ],
   "priceType": [
     "Tarif réduit"
@@ -28,7 +28,7 @@
     }
   ],
   "ntfy": {
-    "enable": false,
-    "topic": "YOUR-OWN-TOPIC"
+    "enable": true,
+    "topic": "tennis-florian-unique-142857"
   }
 }

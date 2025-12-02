@@ -2,8 +2,8 @@ name: Run Tennis Bot
 run-name: Automated Tennis Search
 on:
   schedule:
-    # Tous les mardis à 7h55 heure française (6h UTC)
-    - cron: '50 6 * * 2'  # 06:50 UTC = 07:50 heure de Paris
+    # Tous les mercredi à 7h55 heure française (6h UTC)
+    - cron: '55 6 * * 3'  # 06:59 UTC = 07:59 heure de Paris
   workflow_dispatch: # permet de le lancer manuellement si besoin
 
 jobs:

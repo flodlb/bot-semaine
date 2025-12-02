@@ -7,7 +7,19 @@ import { config } from './staticFiles.js'
 import { notify } from './lib/ntfy.js'
 
 dayjs.extend(customParseFormat)
-
+async function waitUntil8h00Paris() {
+  const now = new Date();
+  const parisNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
+  const target = new Date(parisNow);
+  target.setHours(7, 59, 59, 0);
+  const msToWait = target - parisNow;
+  if (msToWait > 0) {
+    console.log(`⏳ Attente jusqu'à 8h00 Paris (${(msToWait / 60000).toFixed(1)} min)...`);
+    await new Promise(res => setTimeout(res, msToWait));
+  } else {
+    console.log("⏰ Déjà après 8h00 → on continue.");
+  }
+}
 const bookTennis = async () => {
   const DRY_RUN_MODE = process.argv.includes('--dry-run')
   if (DRY_RUN_MODE) {
@@ -52,7 +64,7 @@ const bookTennis = async () => {
       await page.waitForSelector(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.click(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.waitForSelector('.date-picker', { state: 'hidden' })
-
+      await waitUntil8h00Paris();
       await page.click('#rechercher')
 
       // wait until the results page is fully loaded before continue
