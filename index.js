@@ -64,7 +64,7 @@ const bookTennis = async () => {
       await page.waitForSelector(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.click(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.waitForSelector('.date-picker', { state: 'hidden' })
-      await waitUntil8h00Paris();
+      //await waitUntil8h00Paris();
       await page.click('#rechercher')
 
       // wait until the results page is fully loaded before continue
