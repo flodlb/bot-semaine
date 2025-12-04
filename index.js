@@ -60,7 +60,7 @@ async function getAntiBotToken(page, timeout = 20000) {
     
     // Vérifie si le script LiveIdentity est chargé
     const liveIdentityPresent = await page.evaluate(() =>
-    !!document.querySelector('script[src*="liveidentity"]')
+      !!document.querySelector('script[src*="liveidentity"]')
     )
     console.log('📡 [ANTI-BOT] Script LiveIdentity présent :', liveIdentityPresent)
     
@@ -83,7 +83,7 @@ async function getAntiBotToken(page, timeout = 20000) {
     } else {
       console.log('⚠️ [ANTI-BOT] Aucun champ token trouvé dans la page.')
       const bodySnip = await page.evaluate(() =>
-      document.body.innerHTML.slice(0, 500)
+        document.body.innerHTML.slice(0, 500)
       )
       console.log('🧩 [ANTI-BOT] Extrait du body :', bodySnip)
     }
