@@ -52,7 +52,7 @@ async function getAntiBotToken(page, timeout = 20000) {
             await page.evaluate(() => window.scrollBy(0, 150)).catch(() => {})
           } catch {
             console.log('text')
-          })()
+          }()
       ])
 
       await page.waitForTimeout(250)
