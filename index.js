@@ -14,33 +14,22 @@ async function prepareAntiBot(page) {
   })
 }
 
-async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ [ANTI-BOT] Génération du token…')
+async function getAntiBotToken(page, timeout = 120000) {
+  await page.waitForTimeout(50000)
   const url = page.url()
   const start = Date.now()
-  await page.waitForTimeout(50000)
   while (Date.now() - start < timeout) {
     console.log('🌍 URL actuelle :', url)
     try {
-      // attends que la page arrête de bouger
       await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {})
-
-      // Sélecteurs possibles
       const selector = '#li-antibot-token, input[name="li-antibot-token"]'
-
       const tokenField = await page.$(selector)
-
       if (tokenField) {
         const val = await tokenField.evaluate(el => el.value?.trim() || '')
-
-        console.log('📥 Token lu :', val || '(vide)')
-
         if (val && val.length > 5) {
-          console.log('✅ Token final :', val)
           return val
         }
       }
-      // Mouvement souris + scroll mais protégé contre navigation
       await Promise.all([
         page.waitForLoadState('domcontentloaded').catch(() => {}),
         (async () => {
