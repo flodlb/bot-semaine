@@ -12,7 +12,7 @@ async function prepareAntiBot(page) {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
   })
-}
+}/*
 async function getAntiBotToken(page, timeout = 60000) {
   console.log('🚀 Début de la recherche du token…')
   await page.waitForTimeout(5000)
@@ -79,6 +79,29 @@ async function getAntiBotToken(page, timeout = 60000) {
 
   console.log('⛔ Timeout atteint sans trouver le token')
   throw new Error('❌ Timeout anti-bot : token introuvable.')
+}*/
+async function getAntiBotToken(page, timeout = 30000) {
+  console.log('🚀 Début de la recherche du token…')
+
+  const start = Date.now()
+  const selector = '#li-antibot-token, input[name="li-antibot-token"]'
+
+  // Attends que le champ existe au moins
+  await page.waitForSelector(selector, { timeout: 10000 })
+
+  while (Date.now() - start < timeout) {
+    const val = await page.$eval(selector, el => el.value?.trim() || '')
+    console.log('📦 Valeur token actuelle :', val)
+
+    if (val && val.length > 5) {
+      console.log("🎯 TOKEN VALIDE :', val)
+      return val
+    }
+
+    await page.waitForTimeout(500) // re-vérifie souvent
+  }
+
+  throw new Error('❌ Timeout : token jamais rempli')
 }
 
 
