@@ -13,31 +13,41 @@ async function prepareAntiBot(page) {
   });
 }
 
-async function getAntiBotToken(page, timeout = 2000) {
-  console.log("🛡️ Génération du token anti-bot…");
-  await page.waitForTimeout(5000);
-  const start = Date.now();
-  while (Date.now() - start < timeout) {
+async function prepareAntiBot(page) {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
+  })
+}
 
-    const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]');
+async function getAntiBotToken(page, timeout = 2000) {
+  console.log('🛡️ Génération du token anti-bot…')
+  await page.waitForTimeout(5000)
+  const start = Date.now()
+
+  while (Date.now() - start < timeout) {
+    const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]')
+
     if (tokenField) {
-      const val = await tokenField.evaluate(el => el.value?.trim());
+      const val = await tokenField.evaluate(el => el.value?.trim())
       if (val && val.length > 5) {
-        console.log("✅ Token trouvé :", val.slice(0, 20) + "…");
-        return val;
+        console.log('✅ Token trouvé :', val.slice(0, 20) + '…')
+        return val
       }
     }
-    await page.waitForTimeout(120);
+
+    await page.waitForTimeout(120)
+
     try {
-      await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60);
-      await page.waitForTimeout(70);
-      await page.mouse.down();
-      await page.waitForTimeout(40);
-      await page.mouse.up();
-      await page.evaluate(() => window.scrollBy(0, 120));
-    } catch (_) {}
+      await page.mouse.move(1 + Math.random() * 60, 1 + Math.random() * 60)
+      await page.waitForTimeout(70)
+      await page.mouse.down()
+      await page.waitForTimeout(40)
+      await page.mouse.up()
+      await page.evaluate(() => window.scrollBy(0, 120))
+    } catch {}
   }
-  throw new Error("❌ Impossible de récupérer le token anti-bot.");
+
+  throw new Error('❌ Impossible de récupérer le token anti-bot.')
 }
 
 
@@ -89,18 +99,18 @@ const bookTennis = async () => {
       await page.waitForSelector('.date-picker', { state: 'hidden' })
 
       await page.click('#rechercher')
-      await prepareAntiBot(page);
-      const token = await getAntiBotToken(page);
+      await prepareAntiBot(page)
+      const token = await getAntiBotToken(page)
       await page.evaluate(token => {
-        let input = document.querySelector("input[name='li-antibot-token']");
+        let input = document.querySelector("input[name='li-antibot-token']")
         if (!input) {
-          input = document.createElement("input");
-          input.type = "hidden";
-          input.name = "li-antibot-token";
-          document.querySelector("form").appendChild(input);
+          input = document.createElement("input")
+          input.type = "hidden"
+          input.name = "li-antibot-token"
+          document.querySelector("form").appendChild(input)
         }
-        input.value = token;
-      }, token);
+        input.value = token
+      }, token)
       // wait until the results page is fully loaded before continue
       await page.waitForLoadState('domcontentloaded')
 
