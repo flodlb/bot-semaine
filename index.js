@@ -12,125 +12,55 @@ async function prepareAntiBot(page) {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
   })
-}/*
-async function getAntiBotToken(page, timeout = 60000) {
-  console.log('🚀 Début de la recherche du token…')
-  await page.waitForTimeout(5000)
+}
+async function getAntiBotToken(page, timeout = 20000) {
+  console.log('🛡️ Attente du champ anti-bot…')
 
+  // On attend que l’élément soit présent au DOM
+  await page.waitForSelector('#li-antibot-token, input[name="li-antibot-token"]', {
+    timeout,
+  }).catch(() => {
+    throw new Error('❌ Champ token introuvable.')
+  })
+
+  console.log('✨ Champ détecté. Simulation humaine…')
   const start = Date.now()
 
-  while (Date.now() - start < timeout) {
-    const elapsed = Date.now() - start
-    const currentUrl = page.url()
-    console.log('⏱️',elapsed,'ms écoulées — URL :',currentUrl)
-
-    try {
-      console.log('🕸️ Attente du networkidle…')
-      await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {
-        console.log('⚠️ Networkidle timeout (ignorable)')
-      })
-
-      const selector = '#li-antibot-token, input[name="li-antibot-token"]'
-      console.log('🔎 Recherche du sélecteur :', selector)
-      const tokenField = await page.$(selector)
-
-      if (!tokenField) {
-        console.log('❌ Champ token NON trouvé à ce cycle')
-      } else {
-        console.log('✨ Champ token trouvé, récupération de la valeur…')
-        const val = await tokenField.evaluate(el => el.value?.trim() || '')
-
-        console.log('📦 Valeur récupérée :', val)
-
-        if (val && val.length > 5) {
-          console.log('🎯 TOKEN VALIDE TROUVÉ :', val)
-          return val
-        } else {
-          console.log('⚠️ Champ trouvé mais vide/incorrect')
-        }
-      }
-
-      console.log('🧠 Mouvement souris + scroll pour anti-bot…')
-
-      await Promise.all([
-        page.waitForLoadState('domcontentloaded').catch(() => {
-          console.log('⚠️ domcontentloaded timeout (ignorable)')
-        }),
-        (async () => {
-          try {
-            await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60)
-            await page.waitForTimeout(70)
-            await page.mouse.down()
-            await page.waitForTimeout(40)
-            await page.mouse.up()
-            await page.evaluate(() => window.scrollBy(0, 120)).catch(() => {})
-            console.log('✔️ Interaction effectuée')
-          } catch {
-            console.log('❌ Interaction souris/scroll échouée')
-          }
-        })()
-      ])
-
-      await page.waitForTimeout(300)
-    } catch (err) {
-      console.log('💥 Erreur lors du cycle :', err.message)
-    }
-  }
-
-  console.log('⛔ Timeout atteint sans trouver le token')
-  throw new Error('❌ Timeout anti-bot : token introuvable.')
-}*/
-async function getAntiBotToken(page, timeout = 30000) {
-  console.log('🚀 Recherche du token…')
-
-  const selector = '#li-antibot-token, input[name="li-antibot-token"]'
-  const start = Date.now()
-
-  let tokenField = await page.$(selector)
-
-  while (!tokenField) {
-    console.log('⚠️ Champ pas encore présent — attente…')
-    await page.waitForTimeout(200)
-
+  for (;;) {
+    // Sortie si timeout dépassé
     if (Date.now() - start > timeout) {
-      throw new Error('❌ Timeout : champ token introuvable')
+      throw new Error('❌ Impossible de récupérer le token anti-bot.')
     }
 
-    tokenField = await page.$(selector)
-  }
-
-  console.log('✨ Champ détecté. Simulation de présence humaine…')
-
-  // 🧠 Mouvements humains SANS CLIC
-  for (let i = 0; i < 10; i++) {
-    await page.mouse.move(
-      50 + Math.random() * 200,
-      50 + Math.random() * 200,
-      { steps: 3 }
+    // On lit la valeur du token
+    const val = await page.$eval(
+      '#li-antibot-token, input[name="li-antibot-token"]',
+      el => el.value?.trim() || ""
     )
-    await page.waitForTimeout(200)
-    await page.evaluate(() => window.scrollBy(0, 20 + Math.random() * 40))
-  }
-
-  console.log('🤖 Interactions terminées. Lecture de la value en boucle…')
-
-  while (Date.now() - start < timeout) {
-    const val = await page.$eval(selector, el => el.value?.trim() || '')
 
     console.log('📦 Token actuel :', JSON.stringify(val))
 
-    if (val && val.length > 5) {
-      console.log('🎯 TOKEN VALIDÉ :', val)
+    if (val.length > 5) {
+      console.log('🎯 TOKEN OBTENU :', val.slice(0, 15) + '…')
       return val
     }
 
-    await page.waitForTimeout(400)
+    // 🧠 Interactions humaines légères
+    try {
+      await page.mouse.move(
+        20 + Math.random() * 200,
+        40 + Math.random() * 300,
+        { steps: 3 }
+      )
+      await page.mouse.down()
+      await page.waitForTimeout(50)
+      await page.mouse.up()
+      await page.evaluate(() => window.scrollBy(0, 100 + Math.random() * 80))
+    } catch (_) {}
+
+    await page.waitForTimeout(200)
   }
-
-  throw new Error('❌ Timeout : token jamais rempli')
 }
-
-
 
 
 
