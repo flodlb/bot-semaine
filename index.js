@@ -99,12 +99,12 @@ const bookTennis = async () => {
       await prepareAntiBot(page)
       const token = await getAntiBotToken(page)
       await page.evaluate(token => {
-        let input = document.querySelector("input[name='li-antibot-token']")
+        let input = document.querySelector('input[name='li-antibot-token']')
         if (!input) {
-          input = document.createElement("input")
-          input.type = "hidden"
-          input.name = "li-antibot-token"
-          document.querySelector("form").appendChild(input)
+          input = document.createElement('input')
+          input.type = 'hidden'
+          input.name = 'li-antibot-token'
+          document.querySelector('form').appendChild(input)
         }
         input.value = token
       }, token)
