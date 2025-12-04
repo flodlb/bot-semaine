@@ -17,46 +17,28 @@ async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
   await page.waitForTimeout(5000)
   // On attend que l’élément soit présent au DOM
-  await page.waitForSelector('#li-antibot-token, input[name="li-antibot-token"]', {
-    timeout,
-  }).catch(() => {
-    throw new Error('❌ Champ token introuvable.')
-  })
-  console.log('✨ Champ détecté. Simulation humaine…')
   const start = Date.now()
-  for (;;) {
-    // Sortie si timeout dépassé
-    if (Date.now() - start > timeout) {
-      throw new Error('❌ Impossible de récupérer le token anti-bot.')
+  while (Date.now() - start < timeout) {
+    const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]')
+    if (tokenField) {
+      const val = await tokenField.evaluate(el => el.value?.trim())
+      if (val && val.length > 5) {
+        console.log('✅ Token trouvé :', val.slice(0, 20) + '…')
+        return val
+      }
     }
-    // On lit la valeur du token
-    const val = await page.$eval('#li-antibot-token, input[name="li-antibot-token"]',el => el.value?.trim() || '')
-    console.log('📦 Token actuel :', JSON.stringify(val))
-    if (val.length > 5) {
-      console.log('🎯 TOKEN OBTENU :', val.slice(0, 15) + '…')
-      return val
-    }
-
-    // 🧠 Interactions humaines légères
+    await page.waitForTimeout(120)
     try {
-      await page.mouse.move(
-        20 + Math.random() * 200,
-        40 + Math.random() * 300,
-        { steps: 3 }
-      )
+      await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60)
+      await page.waitForTimeout(70)
       await page.mouse.down()
-      await page.waitForTimeout(50)
+      await page.waitForTimeout(40)
       await page.mouse.up()
-      await page.mouse.move(Math.random() * 300, Math.random() * 100)
-      await page.mouse.move(Math.random() * 300, 500 + Math.random() * 100)
-      await page.evaluate(() => window.scrollBy(0, 100 + Math.random() * 80))
-    } catch {
-      console.log('nul')
-    }
-    await page.waitForTimeout(200)
+      await page.evaluate(() => window.scrollBy(0, 120))
+    } catch {}
   }
+  throw new Error('❌ Impossible de récupérer le token anti-bot.');
 }
-
 
 
 const bookTennis = async () => {
