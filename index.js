@@ -14,9 +14,9 @@ async function prepareAntiBot(page) {
   })
 }
 async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ [ANTI-BOT] Génération du token…');
+  console.log('🛡️ [ANTI-BOT] Génération du token…')
 
-  const start = Date.now();
+  const start = Date.now()
 
   while (Date.now() - start < timeout) {
     try {
@@ -50,8 +50,9 @@ async function getAntiBotToken(page, timeout = 20000) {
             await page.waitForTimeout(40)
             await page.mouse.up()
             await page.evaluate(() => window.scrollBy(0, 150)).catch(() => {})
-          } catch {}
-        })()
+          } catch {
+            console.log('text')
+          })()
       ])
 
       await page.waitForTimeout(250)
