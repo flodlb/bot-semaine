@@ -3,30 +3,25 @@ run-name: Pull request tests ${{ github.head_ref }}
 
 on:
   pull_request:
-    branches: [master]                 # Déclenche le workflow sur les PR visant master
+    branches: [master]
     types: [opened, synchronize, reopened, ready_for_review]
-    # Événements qui relancent les tests
+
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }} 
-  # Empêche l’exécution simultanée de plusieurs runs pour une même PR
+  group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
   test-server:
     name: Server test
-    runs-on: ubuntu-latest             # Machine Linux fournie par GitHub
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4      # Récupère le code de la PR
-
+        uses: actions/checkout@v4
       - name: Setup Nodejs
-        uses: actions/setup-node@v4    # Installe Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20             # Version utilisée
-
+          node-version: 20
       - name: Install NPM packages
-        run: npm ci                    # Installe les dépendances
-
+        run: npm ci
       - name: ESlint
-        run: npm run eslint            # Vérifie le code avec ESLint
+        run: npm run eslint
