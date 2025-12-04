@@ -105,7 +105,7 @@ async function getAntiBotToken(page, timeout = 20000) {
 
         if (val && val.length > 5) {
           console.log('🎉 Token final trouvé !', val)
-          return val;
+          return val
         }
       } else {
         console.log('⚠️ Champ token absent → la page a peut-être rechargé')
