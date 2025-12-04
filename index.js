@@ -15,28 +15,23 @@ async function prepareAntiBot(page) {
 }
 async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
-
+  await page.waitForTimeout(5000);
   // On attend que l’élément soit présent au DOM
   await page.waitForSelector('#li-antibot-token, input[name="li-antibot-token"]', {
     timeout,
   }).catch(() => {
     throw new Error('❌ Champ token introuvable.')
   })
-
   console.log('✨ Champ détecté. Simulation humaine…')
   const start = Date.now()
-
   for (;;) {
     // Sortie si timeout dépassé
     if (Date.now() - start > timeout) {
       throw new Error('❌ Impossible de récupérer le token anti-bot.')
     }
-
     // On lit la valeur du token
     const val = await page.$eval('#li-antibot-token, input[name="li-antibot-token"]',el => el.value?.trim() || '')
-
     console.log('📦 Token actuel :', JSON.stringify(val))
-
     if (val.length > 5) {
       console.log('🎯 TOKEN OBTENU :', val.slice(0, 15) + '…')
       return val
