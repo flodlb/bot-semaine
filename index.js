@@ -91,7 +91,7 @@ const bookTennis = async () => {
       await page.click('#rechercher')
       await prepareAntiBot(page);
       const token = await getAntiBotToken(page);
-      await tennisPage.evaluate(token => {
+      await page.evaluate(token => {
         let input = document.querySelector("input[name='li-antibot-token']");
         if (!input) {
           input = document.createElement("input");
