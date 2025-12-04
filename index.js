@@ -132,6 +132,7 @@ const bookTennis = async () => {
   })
   console.log(`${dayjs().format()} - Browser started`)
   const page = await browser.newPage()
+  await prepareAntiBot(page)
   await page.route('https://captcha.liveidentity.com/**invisible-captcha-infos**', (route) => route.abort())
   page.setDefaultTimeout(120000)
   await page.goto('https://tennis.paris.fr/tennis/jsp/site/Portal.jsp?page=tennis&view=start&full=1')
@@ -166,7 +167,7 @@ const bookTennis = async () => {
       await page.waitForSelector('.date-picker', { state: 'hidden' })
 
       await page.click('#rechercher')
-      await prepareAntiBot(page)
+      
       const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
