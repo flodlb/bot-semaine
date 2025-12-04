@@ -15,7 +15,7 @@ async function prepareAntiBot(page) {
 }
 async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(5000)
   // On attend que l’élément soit présent au DOM
   await page.waitForSelector('#li-antibot-token, input[name="li-antibot-token"]', {
     timeout,
