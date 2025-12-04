@@ -11,7 +11,7 @@ async function waitUntil8h00Paris() {
   const now = new Date();
   const parisNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
   const target = new Date(parisNow);
-  target.setHours(9, 50, 0, 0);
+  target.setHours(10, 5, 0, 0);
   const msToWait = target - parisNow;
   if (msToWait > 0) {
     console.log(`⏳ Attente jusqu'à 8h00 Paris (${(msToWait / 60000).toFixed(1)} min)...`);
@@ -21,6 +21,7 @@ async function waitUntil8h00Paris() {
   }
 }
 const bookTennis = async () => {
+  await waitUntil8h00Paris();
   const DRY_RUN_MODE = process.argv.includes('--dry-run')
   if (DRY_RUN_MODE) {
     console.log('----- DRY RUN START -----')
@@ -64,7 +65,7 @@ const bookTennis = async () => {
       await page.waitForSelector(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.click(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.waitForSelector('.date-picker', { state: 'hidden' })
-      await waitUntil8h00Paris();
+      
       await page.click('#rechercher')
 
       // wait until the results page is fully loaded before continue
