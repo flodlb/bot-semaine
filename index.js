@@ -74,7 +74,20 @@ const bookTennis = async () => {
 
   // wait for login redirection before continue
   await page.waitForSelector('.main-informations')
-
+  // Stockage du token anti-bot
+  const antiBotToken;
+  // Intercepter les réponses du serveur pour récupérer le token (si généré via XHR)
+  page.on('response', async response => {
+    if (response.url().includes('li-antibot-token')) {
+      try {
+        const data = await response.json()
+        if (data.token) {
+          antiBotToken = data.token
+          console.log('🔑 Token récupéré via réseau :', antiBotToken)
+        }
+      } catch {}
+    }
+  })
   try {
     const locations = !Array.isArray(config.locations) ? Object.keys(config.locations) : config.locations
     locationsLoop:
@@ -86,22 +99,20 @@ const bookTennis = async () => {
       await page.locator('.tokens-input-text').pressSequentially(`${location} `)
       await page.waitForSelector(`.tokens-suggestions-list-element >> text="${location}"`)
       await page.click(`.tokens-suggestions-list-element >> text="${location}"`)
-
+      page.on('response', async response => {
+          if (response.url().includes('/tennis/rest/adrauto/')) {
+            const data = await response.json()
+            console.log('📋 Suggestions JSON :', data)
+          }
+        })
       // select date
       await page.click('#when')
       const date = config.date ? dayjs(config.date, 'D/MM/YYYY') : dayjs().add(6, 'days')
       await page.waitForSelector(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.click(`[dateiso="${date.format('DD/MM/YYYY')}"]`)
       await page.waitForSelector('.date-picker', { state: 'hidden' })
-
-      await page.click('#rechercher')
-      await page.waitForTimeout(1600)
-      page.on('response', async response => {
-        if (response.url().includes('anti-bot-endpoint')) {
-          const data = await response.json()
-          console.log('🔑 Token récupéré via réseau :', data.token)
-        }
-      })
+      await page.keyboard.press('Enter'); // sélection automatique du premier token
+      await page.click('#rechercher')   
       const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
