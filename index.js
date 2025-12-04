@@ -100,10 +100,9 @@ const bookTennis = async () => {
         if (response.url().includes('anti-bot-endpoint')) {
           const data = await response.json()
           console.log('🔑 Token récupéré via réseau :', data.token)
-          const token = data.token
         }
       })
-      //const token = await getAntiBotToken(page)
+      const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
         if (!input) {
