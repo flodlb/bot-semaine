@@ -107,8 +107,23 @@ const bookTennis = async () => {
         console.log(`${dayjs().format()} - Failed to find reservation for ${location}`)
         continue
       }
-      console.log(`${dayjs().format()} - Search at 1 / 3 - Validation du court`)
-      await page.waitForSelector('.order-steps-infos h2 >> text="1 / 3 - Validation du court"')
+      //console.log(`${dayjs().format()} - Search at 1 / 3 - Validation du court`)
+      //await page.waitForSelector('.order-steps-infos h2 >> text="1 / 3 - Validation du court"')
+      // Essaie directement dans la page
+      try {
+        await page.getByText("1 / 3 - Validation du court").waitFor({ timeout: 5000 });
+        console.log("Trouvé dans la page principale");
+      } catch {
+        // Sinon, essaye dans un iframe
+        const frames = page.frames();
+        for (const f of frames) {
+          try {
+            await f.getByText("1 / 3 - Validation du court").waitFor({ timeout: 2000 });
+            console.log("Trouvé dans l’iframe : ", f.url());
+            break;
+          } catch {}
+        }
+      }
 
       for (const [i, player] of config.players.entries()) {
         if (i > 0 && i < config.players.length) {
