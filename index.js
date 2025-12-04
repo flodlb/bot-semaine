@@ -87,7 +87,7 @@ async function getAntiBotToken(page, timeout = 30000) {
   const selector = '#li-antibot-token, input[name="li-antibot-token"]'
 
   // Attends que le champ existe au moins
-  await page.waitForSelector(selector, { timeout: 10000 })
+  await page.waitForSelector(selector, { timeout: 100000 })
 
   while (Date.now() - start < timeout) {
     const val = await page.$eval(selector, el => el.value?.trim() || '')
