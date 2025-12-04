@@ -11,7 +11,7 @@ async function waitUntil8h00Paris() {
   const now = new Date();
   const parisNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
   const target = new Date(parisNow);
-  target.setHours(9, 39, 59, 0);
+  target.setHours(9, 50, 0, 0);
   const msToWait = target - parisNow;
   if (msToWait > 0) {
     console.log(`⏳ Attente jusqu'à 8h00 Paris (${(msToWait / 60000).toFixed(1)} min)...`);
