@@ -13,107 +13,56 @@ async function prepareAntiBot(page) {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
   })
 }
-/*
 async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ Génération du token anti-bot…')
-  await page.waitForTimeout(20000)
-  const start = Date.now()
+  console.log('🛡️ [ANTI-BOT] Génération du token…');
+
+  const start = Date.now();
 
   while (Date.now() - start < timeout) {
-    const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]')
-
-    if (tokenField) {
-      const val = await tokenField.evaluate(el => el.value?.trim())
-      if (val && val.length > 5) {
-        console.log('✅ Token trouvé :', val.slice(0, 20) + '…')
-        return val
-      }
-    }await page.waitForTimeout(120)
-
     try {
-      await page.mouse.move(1 + Math.random() * 60, 1 + Math.random() * 60)
-      await page.waitForTimeout(70)
-      await page.mouse.down()
-      await page.waitForTimeout(40)
-      await page.mouse.up()
-      await page.evaluate(() => window.scrollBy(0, 120))
-    } catch {
-      console.log('texte')
-    }
-  }
+      // attends que la page arrête de bouger
+      await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {})
 
-  throw new Error('❌ Impossible de récupérer le token anti-bot.')
-}*/
-async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ [ANTI-BOT] Début de la génération du token…')
-  
-  const start = Date.now()
-  console.log('🛠️ [ANTI-BOT] URL actuelle :', page.url())
-  
-  console.log('🕒 [ANTI-BOT] Attente initiale de 5 secondes…')
-  await page.waitForTimeout(5000)
-  
-  while (Date.now() - start < timeout) {
-  
-    const elapsed = Date.now() - start
-    console.log(`⏳ [ANTI-BOT] Tentative après ${elapsed}ms`)
-    
-    // Vérifie si le script LiveIdentity est chargé
-    const liveIdentityPresent = await page.evaluate(() =>
-      !!document.querySelector('script[src*="liveidentity"]')
-    )
-    console.log('📡 [ANTI-BOT] Script LiveIdentity présent :', liveIdentityPresent)
-    
-    // Vérifie l’existence du DOM lié au token
-    const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]')
-    console.log('🔍 [ANTI-BOT] Champ token détecté :', !!tokenField)
-    
-    if (tokenField) {
-      const val = await tokenField.evaluate(el => el.value?.trim())
-      console.log('📥 [ANTI-BOT] Valeur actuelle du token :', val || '(vide)')
-      
-      if (val && val.length > 5) {
-        console.log('✅ [ANTI-BOT] Token trouvé :', val.slice(0, 20) + '…')
-        return val
+      // Sélecteurs possibles
+      const selector = '#li-antibot-token, input[name="li-antibot-token"]'
+
+      const tokenField = await page.$(selector)
+
+      if (tokenField) {
+        const val = await tokenField.evaluate(el => el.value?.trim() || '')
+
+        console.log('📥 Token lu :', val || '(vide)')
+
+        if (val && val.length > 5) {
+          console.log('✅ Token final :', val)
+          return val
+        }
       }
-    
-      // dump HTML autour du champ si vide
-      const html = await tokenField.evaluate(el => el.outerHTML)
-      console.log('🖼️ [ANTI-BOT] HTML du tokenField :', html)
-    } else {
-      console.log('⚠️ [ANTI-BOT] Aucun champ token trouvé dans la page.')
-      const bodySnip = await page.evaluate(() =>
-        document.body.innerHTML.slice(0, 500)
-      )
-      console.log('🧩 [ANTI-BOT] Extrait du body :', bodySnip)
-    }
-  
-    await page.waitForTimeout(200)
-  
-    try {
-      // Tentative de simuler une action utilisateur
-      console.log('🖱️ [ANTI-BOT] Simulation mouvement souris + scroll…')
-      await page.mouse.move(1 + Math.random() * 60, 1 + Math.random() * 60)
-      await page.waitForTimeout(70)
-      await page.mouse.down()
-      await page.waitForTimeout(40)
-      await page.mouse.up()
-      await page.evaluate(() => window.scrollBy(0, 120))
+
+      // Mouvement souris + scroll mais protégé contre navigation
+      await Promise.all([
+        page.waitForLoadState('domcontentloaded').catch(() => {}),
+        (async () => {
+          try {
+            await page.mouse.move(30 + Math.random() * 50, 20 + Math.random() * 50)
+            await page.waitForTimeout(60)
+            await page.mouse.down()
+            await page.waitForTimeout(40)
+            await page.mouse.up()
+            await page.evaluate(() => window.scrollBy(0, 150)).catch(() => {})
+          } catch {}
+        })()
+      ])
+
+      await page.waitForTimeout(250)
+
     } catch (err) {
-      console.log('⚠️ [ANTI-BOT] Erreur pendant simulation souris :', err.message)
+      console.log('⚠️ Erreur silencieuse anti-bot :', err.message)
     }
   }
-  console.log('❌ [ANTI-BOT] TOKEN NON RÉCUPÉRÉ → Timeout atteint.')
-  console.log('📸 [ANTI-BOT] Capture d’écran de la page (failure.png)…')
-  
-  try {
-    await page.screenshot({ path: 'failure.png' })
-  } catch (err) {
-    console.log('⚠️ [ANTI-BOT] Impossible de prendre le screenshot :', err.message)
-  }
-  throw new Error('❌ Impossible de récupérer le token anti-bot.')
-}
 
+  throw new Error('❌ Timeout anti-bot : token introuvable.')
+}
 
 
 
