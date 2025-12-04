@@ -37,7 +37,7 @@ async function getAntiBotToken(page, timeout = 20000) {
       await page.evaluate(() => window.scrollBy(0, 120))
     } catch {}
   }
-  throw new Error('❌ Impossible de récupérer le token anti-bot.');
+  throw new Error('❌ Impossible de récupérer le token anti-bot.')
 }
 
 
