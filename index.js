@@ -6,7 +6,7 @@ import { createEvent } from 'ics'
 import { config } from './staticFiles.js'
 import { notify } from './lib/ntfy.js'
 
-
+dayjs.extend(customParseFormat)
 async function prepareAntiBot(page) {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "webdriver", { get: () => undefined });
@@ -41,7 +41,7 @@ async function getAntiBotToken(page, timeout = 2000) {
 }
 
 
-dayjs.extend(customParseFormat)
+
 
 const bookTennis = async () => {
   const DRY_RUN_MODE = process.argv.includes('--dry-run')
