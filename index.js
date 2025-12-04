@@ -22,13 +22,13 @@ async function getAntiBotToken(page, timeout = 1200) {
   while (Date.now() - start < timeout) {
     const elapsed = Date.now() - start
     const currentUrl = page.url()
-    console.log('⏱️ ${elapsed}ms écoulées — URL : ${currentUrl}')
+    console.log('⏱️',elapsed,'ms écoulées — URL :',currentUrl)
 
     try {
       console.log('🕸️ Attente du networkidle…')
       await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {
         console.log('⚠️ Networkidle timeout (ignorable)')
-      });
+      })
 
       const selector = '#li-antibot-token, input[name="li-antibot-token"]'
       console.log('🔎 Recherche du sélecteur :', selector)
@@ -69,7 +69,7 @@ async function getAntiBotToken(page, timeout = 1200) {
             console.log('❌ Interaction souris/scroll échouée')
           }
         })()
-      ]);
+      ])
 
       await page.waitForTimeout(300)
     } catch (err) {
