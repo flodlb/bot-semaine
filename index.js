@@ -13,10 +13,10 @@ async function prepareAntiBot(page) {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
   })
 }
+
 async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
   await page.waitForTimeout(5000)
-  // On attend que l’élément soit présent au DOM
   const start = Date.now()
   while (Date.now() - start < timeout) {
     const tokenField = await page.$('#li-antibot-token, input[name="li-antibot-token"]')
@@ -27,6 +27,7 @@ async function getAntiBotToken(page, timeout = 20000) {
         return val
       }
     }
+    console.log('🔄 Token pas encore disponible, simulation humaine…')
     await page.waitForTimeout(120)
     try {
       await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60)
@@ -36,11 +37,12 @@ async function getAntiBotToken(page, timeout = 20000) {
       await page.mouse.up()
       await page.evaluate(() => window.scrollBy(0, 120))
     } catch {
-      console.log('nul')
+      console.log('⚠️ Erreur lors de la simulation humaine, ignorée')
     }
   }
   throw new Error('❌ Impossible de récupérer le token anti-bot.')
 }
+
 
 
 const bookTennis = async () => {
@@ -93,7 +95,8 @@ const bookTennis = async () => {
       await page.waitForSelector('.date-picker', { state: 'hidden' })
 
       await page.click('#rechercher')
-      
+      await page.waitForTimeout(1600);
+      console.log('📌 Valeur après token =', await page.$eval('#li-antibot-token', el => el.value));
       const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
