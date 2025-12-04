@@ -67,96 +67,96 @@ async function getAntiBotToken(page, timeout = 20000) {
   throw new Error('❌ Timeout anti-bot : token introuvable.')
 }*/
 async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ [ANTI-BOT] Démarrage récupération token…');
-  const start = Date.now();
+  console.log('🛡️ [ANTI-BOT] Démarrage récupération token…')
+  const start = Date.now()
 
   while (Date.now() - start < timeout) {
-    const elapsed = Date.now() - start;
-    console.log(`⏳ [ANTI-BOT] Tentative +${elapsed}ms`);
+    const elapsed = Date.now() - start
+    console.log(`⏳ [ANTI-BOT] Tentative +${elapsed}ms`)
 
     try {
-      console.log('📡 Attente stabilisation réseau (networkidle)…');
+      console.log('📡 Attente stabilisation réseau (networkidle)…')
       await page.waitForLoadState('networkidle', { timeout: 3000 }).catch(() => {
-        console.log('⚠️ networkidle timeout → page encore active');
-      });
+        console.log('⚠️ networkidle timeout → page encore active')
+      })
 
-      const url = page.url();
-      console.log('🌍 URL actuelle :', url);
+      const url = page.url()
+      console.log('🌍 URL actuelle :', url)
 
       // Vérifie si LiveIdentity est injecté
       const live = await page.evaluate(() => {
-        return !!document.querySelector('script[src*="liveidentity"], script[src*="captcha"]');
-      }).catch(() => false);
+        return !!document.querySelector('script[src*="liveidentity"], script[src*="captcha"]')
+      }).catch(() => false)
 
-      console.log('📡 LiveIdentity présent :', live);
+      console.log('📡 LiveIdentity présent :', live)
 
       // Recherche du champ
-      const selector = '#li-antibot-token, input[name="li-antibot-token"]';
-      const tokenField = await page.$(selector);
+      const selector = '#li-antibot-token, input[name="li-antibot-token"]'
+      const tokenField = await page.$(selector)
 
-      console.log('🔍 Champ token trouvé :', !!tokenField);
+      console.log('🔍 Champ token trouvé :', !!tokenField)
 
       if (tokenField) {
-        const html = await tokenField.evaluate(el => el.outerHTML).catch(() => '(inaccessible)');
-        console.log('🖼️ HTML du champ token :', html);
+        const html = await tokenField.evaluate(el => el.outerHTML).catch(() => '(inaccessible)')
+        console.log('🖼️ HTML du champ token :', html)
 
-        const val = await tokenField.evaluate(el => el.value?.trim() || '').catch(() => '');
-        console.log('📥 Valeur lue :', val || '(vide)');
+        const val = await tokenField.evaluate(el => el.value?.trim() || '').catch(() => '')
+        console.log('📥 Valeur lue :', val || '(vide)')
 
         if (val && val.length > 5) {
-          console.log('🎉 Token final trouvé !', val);
+          console.log('🎉 Token final trouvé !', val)
           return val;
         }
       } else {
-        console.log('⚠️ Champ token absent → la page a peut-être rechargé');
+        console.log('⚠️ Champ token absent → la page a peut-être rechargé')
       }
 
       // ACTION UTILISATEUR SIMULÉE
-      console.log('🖱️ Simulation souris + scroll…');
+      console.log('🖱️ Simulation souris + scroll…')
 
       await Promise.all([
         page.waitForLoadState('domcontentloaded').catch(() => {
-          console.log('⚠️ domcontentloaded timeout → page instable');
+          console.log('⚠️ domcontentloaded timeout → page instable')
         }),
         (async () => {
           try {
-            const x = 30 + Math.random() * 50;
-            const y = 20 + Math.random() * 50;
-            console.log(`➡️ move souris vers (${x.toFixed(0)}, ${y.toFixed(0)})`);
+            const x = 30 + Math.random() * 50
+            const y = 20 + Math.random() * 50
+            console.log(`➡️ move souris vers (${x.toFixed(0)}, ${y.toFixed(0)})`)
 
-            await page.mouse.move(x, y);
-            await page.waitForTimeout(60);
-            await page.mouse.down();
-            await page.waitForTimeout(40);
-            await page.mouse.up();
+            await page.mouse.move(x, y)
+            await page.waitForTimeout(60)
+            await page.mouse.down()
+            await page.waitForTimeout(40)
+            await page.mouse.up()
 
-            console.log('➡️ scroll…');
+            console.log('➡️ scroll…')
             await page.evaluate(() => window.scrollBy(0, 150)).catch(() => {
-              console.log('⚠️ Erreur scroll → navigation probable');
-            });
+              console.log('⚠️ Erreur scroll → navigation probable')
+            })
           } catch (err) {
-            console.log('⚠️ Erreur simulation souris :', err.message);
+            console.log('⚠️ Erreur simulation souris :', err.message)
           }
         })()
-      ]);
+      ])
 
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(250)
 
     } catch (err) {
-      console.log('🔥 ERREUR MAJEURE DANS LOOP ANTI-BOT :', err.message);
+      console.log('🔥 ERREUR MAJEURE DANS LOOP ANTI-BOT :', err.message)
     }
   }
 
-  console.log('❌ [ANTI-BOT] TOKEN NON RÉCUPÉRÉ → timeout.');
-  console.log('📸 Capture screenshot failure.png');
+  console.log('❌ [ANTI-BOT] TOKEN NON RÉCUPÉRÉ → timeout.')
+  console.log('📸 Capture screenshot failure.png')
 
   try {
-    await page.screenshot({ path: 'failure.png' });
+    await page.screenshot({ path: 'failure.png' })
   } catch (err) {
-    console.log('⚠️ Screenshot impossible :', err.message);
+    console.log('⚠️ Screenshot impossible :', err.message)
   }
 
-  throw new Error('❌ Impossible de récupérer le token anti-bot.');
+  throw new Error('❌ Impossible de récupérer le token anti-bot.')
 }
 
 
