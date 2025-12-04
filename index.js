@@ -7,7 +7,7 @@ import { config } from './staticFiles.js'
 import { notify } from './lib/ntfy.js'
 
 dayjs.extend(customParseFormat)
-/*async function waitUntil8h00Paris() {
+async function waitUntil8h00Paris() {
   const now = new Date();
   const parisNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
   const target = new Date(parisNow);
@@ -19,9 +19,9 @@ dayjs.extend(customParseFormat)
   } else {
     console.log("⏰ Déjà après 8h00 → on continue.");
   }
-}*/
+}
 const bookTennis = async () => {
-  //await waitUntil8h00Paris();
+  await waitUntil8h00Paris();
   const DRY_RUN_MODE = process.argv.includes('--dry-run')
   if (DRY_RUN_MODE) {
     console.log('----- DRY RUN START -----')
@@ -107,6 +107,7 @@ const bookTennis = async () => {
         console.log(`${dayjs().format()} - Failed to find reservation for ${location}`)
         continue
       }
+      console.log("URL actuelle :", page.url());
       console.log(`${dayjs().format()} - Search at 1 / 3 - Validation du court`)
       await page.waitForSelector('.order-steps-infos h2 >> text="1 / 3 - Validation du court"')
       // Essaie directement dans la page
