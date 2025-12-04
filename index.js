@@ -14,7 +14,7 @@ async function prepareAntiBot(page) {
   })
 }
 
-async function getAntiBotToken(page, timeout = 2000) {
+async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Génération du token anti-bot…')
   await page.waitForTimeout(20000)
   const start = Date.now()
