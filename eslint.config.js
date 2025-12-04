@@ -1,11 +1,14 @@
-import globals from 'globals'
-import pluginJs from '@eslint/js'
-import stylisticJs from '@stylistic/eslint-plugin-js'
+const globals = require('globals')
+const pluginJs = require('@eslint/js')
+const stylisticJs = require('@stylistic/eslint-plugin-js')
 
-  languageOptions: {
-    globals: {
-      ...globals.node,
-      ...globals.browser
+module.exports = [
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.browser   // ✔️ Playwright DOM globals
+      }
     }
   },
   {
@@ -22,6 +25,5 @@ import stylisticJs from '@stylistic/eslint-plugin-js'
   {
     ignores: ['staticFiles.js']
   },
-  pluginJs.configs.recommended,
+  pluginJs.configs.recommended
 ]
-
