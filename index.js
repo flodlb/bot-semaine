@@ -19,7 +19,6 @@ async function getAntiBotToken(page, timeout = 20000) {
   const url = page.url()
   console.log('🌍 URL actuelle :', url)
   const start = Date.now()
-  url = page.url()
   console.log('🌍 URL actuelle :', url)
   while (Date.now() - start < timeout) {
     try {
@@ -41,7 +40,6 @@ async function getAntiBotToken(page, timeout = 20000) {
           return val
         }
       }
-      url = page.url()
       console.log('🌍 URL actuelle :', url)
       // Mouvement souris + scroll mais protégé contre navigation
       await Promise.all([
@@ -59,7 +57,6 @@ async function getAntiBotToken(page, timeout = 20000) {
           }
         })()
       ])
-      url = page.url()
       console.log('🌍 URL actuelle :', url)
       await page.waitForTimeout(250)
 
