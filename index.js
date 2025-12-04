@@ -56,7 +56,7 @@ async function getAntiBotToken(page, timeout = 20000) {
       await page.mouse.move(Math.random() * 300, 500 + Math.random() * 100)
       await page.evaluate(() => window.scrollBy(0, 100 + Math.random() * 80))
     } catch () {
-      console.log.('t')
+      console.log('t')
     }
 
     await page.waitForTimeout(200)
