@@ -1,10 +1,8 @@
 {
-  "name": "bottennis",
+  "name": "par-ici-tennis",
   "version": "1.0.0",
   "description": "Script to book tennis court automatically",
   "main": "index.js",
-  "author": "Bertrand d'Aure",
-  "license": "MIT",
   "type": "module",
   "scripts": {
     "postinstall": "npx playwright install chromium",
@@ -13,10 +11,9 @@
   },
   "dependencies": {
     "@gradio/client": "^1.19.1",
-    "dayjs": "^1.11.19",
+    "dayjs": "^1.11.18",
     "ics": "^3.8.1",
-    "ntfy": "^1.11.5",
-    "playwright": "^1.57.0"
+    "playwright": "^1.56.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",
@@ -25,18 +22,5 @@
     "@stylistic/eslint-plugin-js": "^2.8.0",
     "eslint": "^9.9.1",
     "globals": "^15.9.0"
-  },
-  "directories": {
-    "doc": "doc",
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/flodlb/bot-semaine.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/flodlb/bot-semaine/issues"
-  },
-  "homepage": "https://github.com/flodlb/bot-semaine#readme"
+  }
 }
