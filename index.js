@@ -48,17 +48,12 @@ async function getAntiBotToken(page, timeout = 20000) {
         page.waitForLoadState('domcontentloaded').catch(() => {}),
         (async () => {
           try {
-            await page.mouse.move(30 + Math.random() * 50, 20 + Math.random() * 50)
-            await page.waitForTimeout(60)
+            await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60)
+            await page.waitForTimeout(70)
             await page.mouse.down()
             await page.waitForTimeout(40)
-            await page.mouse.up()      await page.mouse.move(1 + Math.random()*60, 1 + Math.random()*60);
-      await page.waitForTimeout(70);
-      await page.mouse.down();
-      await page.waitForTimeout(40);
-      await page.mouse.up();
-      await page.evaluate(() => window.scrollBy(0, 120));
-            await page.evaluate(() => window.scrollBy(0, 150)).catch(() => {})
+            await page.mouse.up()
+            await page.evaluate(() => window.scrollBy(0, 120)).catch(() => {})
           } catch {
             console.log('text')
           }
