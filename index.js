@@ -107,8 +107,8 @@ const bookTennis = async () => {
         console.log(`${dayjs().format()} - Failed to find reservation for ${location}`)
         continue
       }
-      //console.log(`${dayjs().format()} - Search at 1 / 3 - Validation du court`)
-      //await page.waitForSelector('.order-steps-infos h2 >> text="1 / 3 - Validation du court"')
+      console.log(`${dayjs().format()} - Search at 1 / 3 - Validation du court`)
+      await page.waitForSelector('.order-steps-infos h2 >> text="1 / 3 - Validation du court"')
       // Essaie directement dans la page
       /*try {
         await page.getByText("1 / 3 - Validation du court").waitFor({ timeout: 5000 });
