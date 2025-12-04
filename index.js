@@ -7,11 +7,6 @@ import { config } from './staticFiles.js'
 import { notify } from './lib/ntfy.js'
 
 dayjs.extend(customParseFormat)
-async function prepareAntiBot(page) {
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator, "webdriver", { get: () => undefined });
-  });
-}
 
 async function prepareAntiBot(page) {
   await page.addInitScript(() => {
@@ -61,7 +56,7 @@ const bookTennis = async () => {
   }
 
   console.log(`${dayjs().format()} - Starting searching tennis`)
-  const browser = await chromium.launch({ headless: true, slowMo: 500, timeout: 120000 })
+  const browser = await chromium.launch({ headless: false, slowMo: 500, timeout: 120000 })
 
   console.log(`${dayjs().format()} - Browser started`)
   const page = await browser.newPage()
