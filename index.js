@@ -17,11 +17,10 @@ async function prepareAntiBot(page) {
 async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ [ANTI-BOT] Génération du token…')
   const url = page.url()
-  console.log('🌍 URL actuelle :', url)
   const start = Date.now()
-  console.log('🌍 URL actuelle :', url)
   await page.waitForTimeout(50000)
   while (Date.now() - start < timeout) {
+    console.log('🌍 URL actuelle :', url)
     try {
       // attends que la page arrête de bouger
       await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {})
@@ -41,8 +40,6 @@ async function getAntiBotToken(page, timeout = 20000) {
           return val
         }
       }
-      const url = page.url()
-      console.log('🌍 URL actuelle :', url)
       // Mouvement souris + scroll mais protégé contre navigation
       await Promise.all([
         page.waitForLoadState('domcontentloaded').catch(() => {}),
@@ -59,8 +56,6 @@ async function getAntiBotToken(page, timeout = 20000) {
           }
         })()
       ])
-      const url = page.url()
-      console.log('🌍 URL actuelle :', url)
       await page.waitForTimeout(250)
 
     } catch (err) {
