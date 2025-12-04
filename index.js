@@ -13,7 +13,7 @@ async function prepareAntiBot(page) {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined })
   })
 }
-async function getAntiBotToken(page, timeout = 1200) {
+async function getAntiBotToken(page, timeout = 60000) {
   console.log('🚀 Début de la recherche du token…')
   await page.waitForTimeout(5000)
 
