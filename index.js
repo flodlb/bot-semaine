@@ -14,7 +14,7 @@ async function prepareAntiBot(page) {
   })
 }
 async function getAntiBotToken(page, timeout = 1200) {
-  console.log("🚀 Début de la recherche du token…")
+  console.log('🚀 Début de la recherche du token…')
   await page.waitForTimeout(5000)
 
   const start = Date.now()
@@ -22,39 +22,39 @@ async function getAntiBotToken(page, timeout = 1200) {
   while (Date.now() - start < timeout) {
     const elapsed = Date.now() - start
     const currentUrl = page.url()
-    console.log(`⏱️ ${elapsed}ms écoulées — URL : ${currentUrl}`)
+    console.log('⏱️ ${elapsed}ms écoulées — URL : ${currentUrl}')
 
     try {
-      console.log("🕸️ Attente du networkidle…")
+      console.log('🕸️ Attente du networkidle…')
       await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {
-        console.log("⚠️ Networkidle timeout (ignorable)")
+        console.log('⚠️ Networkidle timeout (ignorable)')
       });
 
       const selector = '#li-antibot-token, input[name="li-antibot-token"]'
-      console.log("🔎 Recherche du sélecteur :", selector)
+      console.log('🔎 Recherche du sélecteur :', selector)
       const tokenField = await page.$(selector)
 
       if (!tokenField) {
-        console.log("❌ Champ token NON trouvé à ce cycle")
+        console.log('❌ Champ token NON trouvé à ce cycle')
       } else {
-        console.log("✨ Champ token trouvé, récupération de la valeur…")
+        console.log('✨ Champ token trouvé, récupération de la valeur…')
         const val = await tokenField.evaluate(el => el.value?.trim() || '')
 
-        console.log("📦 Valeur récupérée :", val)
+        console.log('📦 Valeur récupérée :', val)
 
         if (val && val.length > 5) {
-          console.log("🎯 TOKEN VALIDE TROUVÉ :", val)
+          console.log('🎯 TOKEN VALIDE TROUVÉ :', val)
           return val
         } else {
-          console.log("⚠️ Champ trouvé mais vide/incorrect")
+          console.log('⚠️ Champ trouvé mais vide/incorrect')
         }
       }
 
-      console.log("🧠 Mouvement souris + scroll pour anti-bot…")
+      console.log('🧠 Mouvement souris + scroll pour anti-bot…')
 
       await Promise.all([
         page.waitForLoadState('domcontentloaded').catch(() => {
-          console.log("⚠️ domcontentloaded timeout (ignorable)")
+          console.log('⚠️ domcontentloaded timeout (ignorable)')
         }),
         (async () => {
           try {
@@ -64,21 +64,21 @@ async function getAntiBotToken(page, timeout = 1200) {
             await page.waitForTimeout(40)
             await page.mouse.up()
             await page.evaluate(() => window.scrollBy(0, 120)).catch(() => {})
-            console.log("✔️ Interaction effectuée")
+            console.log('✔️ Interaction effectuée')
           } catch {
-            console.log("❌ Interaction souris/scroll échouée")
+            console.log('❌ Interaction souris/scroll échouée')
           }
         })()
       ]);
 
       await page.waitForTimeout(300)
     } catch (err) {
-      console.log("💥 Erreur lors du cycle :", err.message)
+      console.log('💥 Erreur lors du cycle :', err.message)
     }
   }
 
-  console.log("⛔ Timeout atteint sans trouver le token")
-  throw new Error("❌ Timeout anti-bot : token introuvable.")
+  console.log('⛔ Timeout atteint sans trouver le token')
+  throw new Error('❌ Timeout anti-bot : token introuvable.')
 }
 
 
