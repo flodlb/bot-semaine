@@ -81,13 +81,13 @@ async function getAntiBotToken(page, timeout = 60000) {
   throw new Error('❌ Timeout anti-bot : token introuvable.')
 }*/
 async function getAntiBotToken(page, timeout = 30000) {
-  console.log("🚀 Recherche du token…")
+  console.log('🚀 Recherche du token…')
 
   const selector = '#li-antibot-token, input[name="li-antibot-token"]'
   const start = Date.now()
 
   // On ne bloque pas ici → on attend jusqu'à ce que le champ existe
-  let tokenField;
+  const tokenField
   while (!(tokenField = await page.$(selector))) {
     console.log('⚠️ Champ pas encore présent — attente…')
     await page.waitForTimeout(200)
