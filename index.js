@@ -33,10 +33,7 @@ async function getAntiBotToken(page, timeout = 20000) {
     }
 
     // On lit la valeur du token
-    const val = await page.$eval(
-      '#li-antibot-token, input[name="li-antibot-token"]',
-      el => el.value?.trim() || ""
-    )
+    const val = await page.$eval('#li-antibot-token, input[name="li-antibot-token"]',el => el.value?.trim() || '')
 
     console.log('📦 Token actuel :', JSON.stringify(val))
 
@@ -58,7 +55,9 @@ async function getAntiBotToken(page, timeout = 20000) {
       await page.mouse.move(Math.random() * 300, Math.random() * 100)
       await page.mouse.move(Math.random() * 300, 500 + Math.random() * 100)
       await page.evaluate(() => window.scrollBy(0, 100 + Math.random() * 80))
-    } catch (_) {}
+    } catch () {
+      console.log.('t')
+    }
 
     await page.waitForTimeout(200)
   }
