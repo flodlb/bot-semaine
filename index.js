@@ -95,8 +95,8 @@ const bookTennis = async () => {
       await page.waitForSelector('.date-picker', { state: 'hidden' })
 
       await page.click('#rechercher')
-      await page.waitForTimeout(1600);
-      console.log('📌 Valeur après token =', await page.$eval('#li-antibot-token', el => el.value));
+      await page.waitForTimeout(1600)
+      console.log('📌 Valeur après token =', await page.$eval('#li-antibot-token', el => el.value))
       const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
