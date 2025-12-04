@@ -94,7 +94,7 @@ async function getAntiBotToken(page, timeout = 30000) {
     console.log('📦 Valeur token actuelle :', val)
 
     if (val && val.length > 5) {
-      console.log("🎯 TOKEN VALIDE :', val)
+      console.log('🎯 TOKEN VALIDE :', val)
       return val
     }
 
