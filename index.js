@@ -14,7 +14,7 @@ async function prepareAntiBot(page) {
   })
 }
 
-async function getAntiBotToken(page, timeout = 120000) {
+async function getAntiBotToken(page, timeout = 1200) {
   await page.waitForTimeout(50000)
   const url = page.url()
   const start = Date.now()
