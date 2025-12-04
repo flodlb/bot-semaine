@@ -96,8 +96,14 @@ const bookTennis = async () => {
 
       await page.click('#rechercher')
       await page.waitForTimeout(1600)
-      console.log('📌 Valeur après token =', await page.$eval('#li-antibot-token', el => el.value))
-      const token = await getAntiBotToken(page)
+      page.on('response', async response => {
+        if (response.url().includes('anti-bot-endpoint')) {
+          const data = await response.json()
+          console.log('🔑 Token récupéré via réseau :', data.token)
+          const token = data.token
+        }
+      })
+      //const token = await getAntiBotToken(page)
       await page.evaluate(token => {
         let input = document.querySelector('input[name="li-antibot-token"]')
         if (!input) {
