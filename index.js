@@ -62,18 +62,20 @@ async function getAntiBotToken(page, timeout = 20000) {
 
     if (exists > 0) {
       try {
-        const value = await locator.evaluate(el => el.value?.trim() || "")
+        const value = await locator.evaluate(el => el.value?.trim() || '')
         console.log('📥 Valeur lue:', value || '(vide)')
 
         if (value && value.length > 5) {
-          console.log("✅ TOKEN trouvé !")
+          console.log('✅ TOKEN trouvé !')
           return value
         }
-      } catch {}
+      } catch {
+        console.log('cool')
+      }
     }
 
     // 3️⃣ On attend un cycle stable de la page (évite les reloads)
-    await page.waitForLoadState("networkidle").catch(() => {})
+    await page.waitForLoadState("networkidle").catch{console.log('nul')
     await page.waitForTimeout(300)
   }
 
