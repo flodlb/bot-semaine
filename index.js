@@ -75,7 +75,7 @@ async function getAntiBotToken(page, timeout = 20000) {
     }
 
     // 3️⃣ On attend un cycle stable de la page (évite les reloads)
-    await page.waitForLoadState("networkidle").catch{console.log('nul')}
+    await page.waitForLoadState("networkidle").catch(() => console.log('nul'))
     await page.waitForTimeout(300)
   }
 
