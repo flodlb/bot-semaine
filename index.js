@@ -14,7 +14,7 @@ async function prepareAntiBot(page) {
   })
 }
 
-async function getAntiBotToken(page, timeout = 20000) {
+/*async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
   await page.waitForTimeout(5000)
   const start = Date.now()
@@ -41,6 +41,43 @@ async function getAntiBotToken(page, timeout = 20000) {
     }
   }
   throw new Error('❌ Impossible de récupérer le token anti-bot.')
+}*/
+async function getAntiBotToken(page, timeout = 20000) {
+  console.log("🛡️ ANTI-BOT: attente du token…");
+  const tokenSelector = 'input[name="li-antibot-token"]';
+
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+
+    // 1️⃣ Vérifier que le script LiveIdentity est chargé
+    const hasScript = await page.evaluate(() =>
+      !!document.querySelector('script[src*="liveidentity"]')
+    );
+    console.log(`📡 Script LiveIdentity: ${hasScript}`);
+
+    // 2️⃣ Vérifier si l’input existe
+    const locator = page.locator(tokenSelector);
+    const exists = await locator.count();
+    console.log(`🔍 Champ token présent: ${exists > 0}`);
+
+    if (exists > 0) {
+      try {
+        const value = await locator.evaluate(el => el.value?.trim() || "");
+        console.log("📥 Valeur lue:", value || "(vide)");
+
+        if (value && value.length > 5) {
+          console.log("✅ TOKEN trouvé !");
+          return value;
+        }
+      } catch {}
+    }
+
+    // 3️⃣ On attend un cycle stable de la page (évite les reloads)
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await page.waitForTimeout(300);
+  }
+
+  throw new Error("❌ Token introuvable après timeout.");
 }
 
 
@@ -54,7 +91,7 @@ const bookTennis = async () => {
 
   console.log(`${dayjs().format()} - Starting searching tennis`)
   const browser = await chromium.launch({
-    headless: true,   // impératif dans GitHub Actions
+    headless: false,   // impératif dans GitHub Actions
     slowMo: 0,         // facultatif : ralentir n’a aucun sens en CI
     timeout: 120000
   })
@@ -74,21 +111,7 @@ const bookTennis = async () => {
 
   // wait for login redirection before continue
   await page.waitForSelector('.main-informations')
-  // Stockage du token anti-bot
-  const antiBotToken;
-  // Intercepter les réponses du serveur pour récupérer le token (si généré via XHR)
-  page.on('response', async response => {
-    if (response.url().includes('li-antibot-token')) {
-      try {
-        const data = await response.json()
-        if (data.token) {
-          antiBotToken = data.token
-          console.log('🔑 Token récupéré via réseau :', antiBotToken)
-        }
-      } catch {}
-    }
-  })
-  try {
+   try {
     const locations = !Array.isArray(config.locations) ? Object.keys(config.locations) : config.locations
     locationsLoop:
     for (const location of locations) {
@@ -99,12 +122,7 @@ const bookTennis = async () => {
       await page.locator('.tokens-input-text').pressSequentially(`${location} `)
       await page.waitForSelector(`.tokens-suggestions-list-element >> text="${location}"`)
       await page.click(`.tokens-suggestions-list-element >> text="${location}"`)
-      page.on('response', async response => {
-          if (response.url().includes('/tennis/rest/adrauto/')) {
-            const data = await response.json()
-            console.log('📋 Suggestions JSON :', data)
-          }
-        })
+     
       // select date
       await page.click('#when')
       const date = config.date ? dayjs(config.date, 'D/MM/YYYY') : dayjs().add(6, 'days')
