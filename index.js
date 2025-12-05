@@ -92,11 +92,21 @@ const bookTennis = async () => {
   }
 
   console.log(`${dayjs().format()} - Starting searching tennis`)
-  const browser = await chromium.launch({
+  /*const browser = await chromium.launch({
     headless: false,   // impératif dans GitHub Actions
     slowMo: 0,         // facultatif : ralentir n’a aucun sens en CI
     timeout: 120000
-  })
+  })*/
+  const browser = await chromium.launch({
+  headless: true,
+  args: [
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--disable-setuid-sandbox"
+  ]
+})
+
   console.log(`${dayjs().format()} - Browser started`)
   const page = await browser.newPage()
   await prepareAntiBot(page)
