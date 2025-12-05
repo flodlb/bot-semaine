@@ -14,7 +14,7 @@ async function prepareAntiBot(page) {
   })
 }
 
-/*async function getAntiBotToken(page, timeout = 20000) {
+async function getAntiBotToken(page, timeout = 20000) {
   console.log('🛡️ Attente du champ anti-bot…')
   await page.waitForTimeout(5000)
   const start = Date.now()
@@ -41,45 +41,6 @@ async function prepareAntiBot(page) {
     }
   }
   throw new Error('❌ Impossible de récupérer le token anti-bot.')
-}*/
-async function getAntiBotToken(page, timeout = 20000) {
-  console.log('🛡️ ANTI-BOT: attente du token…')
-  const tokenSelector = 'input[name="li-antibot-token"]'
-
-  const start = Date.now()
-  while (Date.now() - start < timeout) {
-
-    // 1️⃣ Vérifier que le script LiveIdentity est chargé
-    const hasScript = await page.evaluate(() =>
-      !!document.querySelector('script[src*="liveidentity"]')
-    )
-    console.log(`📡 Script LiveIdentity: ${hasScript}`)
-
-    // 2️⃣ Vérifier si l’input existe
-    const locator = page.locator(tokenSelector)
-    const exists = await locator.count()
-    console.log(`🔍 Champ token présent: ${exists > 0}`)
-
-    if (exists > 0) {
-      try {
-        const value = await locator.evaluate(el => el.value?.trim() || '')
-        console.log('📥 Valeur lue:', value || '(vide)')
-
-        if (value && value.length > 5) {
-          console.log('✅ TOKEN trouvé !')
-          return value
-        }
-      } catch {
-        console.log('cool')
-      }
-    }
-
-    // 3️⃣ On attend un cycle stable de la page (évite les reloads)
-    await page.waitForLoadState("networkidle").catch(() => console.log('nul'))
-    await page.waitForTimeout(300)
-  }
-
-  throw new Error("❌ Token introuvable après timeout.")
 }
 
 
